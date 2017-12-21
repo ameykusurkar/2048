@@ -6,6 +6,19 @@ root = tk.Tk()
 root.wm_title("2048")
 
 ROWS, COLUMNS = 4, 4
+TILE_COLOURS = {
+    0:    '#C0C0C0',
+    2:    '#1ABC9C',
+    4:    '#16A085',
+    8:    '#2ECC71',
+    16:   '#27AE60',
+    32:   '#3498DB',
+    64:   '#2980B9',
+    128:  '#34495E',
+    256:  '#2C3E50',
+    512:  '#EA4C88',
+    1024: '#CA2C68',
+}
 
 grid = np.zeros((ROWS, COLUMNS))
 display = []
@@ -39,28 +52,7 @@ def displayGrid():
       displayText, displayColour = str(int(grid[r][c])), ''
       if grid[r][c] == 0:
         displayText, displayColour = '', '#C0C0C0'
-      elif grid[r][c] == 2:
-        displayColour = '#1ABC9C'
-      elif grid[r][c] == 4:
-        displayColour = '#16A085'
-      elif grid[r][c] == 8:
-        displayColour = '#2ECC71'
-      elif grid[r][c] == 16:
-        displayColour = '#27AE60'
-      elif grid[r][c] == 32:
-        displayColour = '#3498DB'
-      elif grid[r][c] == 64:
-        displayColour = '#2980B9'
-      elif grid[r][c] == 128:
-        displayColour = '#34495E'
-      elif grid[r][c] == 256:
-        displayColour = '#2C3E50'
-      elif grid[r][c] == 512:
-        displayColour = '#EA4C88'
-      elif grid[r][c] == 1024:
-        displayColour = '#CA2C68'
-      else:
-        displayColour = 'black'
+      displayColour = TILE_COLOURS.get(grid[r][c], 'black')
       display[r][c].config(text=displayText)
       display[r][c].config(bg=displayColour)
 
