@@ -1,8 +1,8 @@
-from Tkinter import *
+import tkinter as tk
 import numpy as np
 import random
 
-root = Tk()
+root = tk.Tk()
 root.wm_title("2048")
 
 ROWS, COLUMNS = 4, 4
@@ -18,14 +18,14 @@ def restart():
   grid[startR][startC] = 2
   displayGrid()
 
-F = Frame(root, height=500, width=500, bg='#606060')
-B = Button(root, text="Restart", command=restart)
+F = tk.Frame(root, height=500, width=500, bg='#606060')
+B = tk.Button(root, text="Restart", command=restart)
 
 # Setting up grid and display
 for r in range(ROWS):
   displayRow = []
   for c in range(COLUMNS):
-    newLabel = Label(F, bg='#E74C3C', fg='white',
+    newLabel = tk.Label(F, bg='#E74C3C', fg='white',
                      borderwidth=10, 
                      width = 4, height = 2,
                      font=("Arial", 28))
@@ -81,7 +81,7 @@ def collapseUp(event):
 def flushUp():
   didFlush = False
   for c in range(COLUMNS):
-    newCol = np.array(filter(lambda x: x > 0, grid[:,c]))
+    newCol = np.array(list(filter(lambda x: x > 0, grid[:,c])))
     if newCol.size < COLUMNS:
       didFlush = True
     newCol = np.append(newCol, np.zeros(ROWS-newCol.size))
@@ -105,7 +105,7 @@ def collapseDown(event):
 def flushDown():
   didFlush = False
   for c in range(COLUMNS):
-    newCol = np.array(filter(lambda x: x > 0, grid[:,c]))
+    newCol = np.array(list(filter(lambda x: x > 0, grid[:,c])))
     if newCol.size < COLUMNS:
       didFlush = True
     newCol = np.append(np.zeros(ROWS-newCol.size), newCol)
@@ -129,7 +129,7 @@ def collapseLeft(event):
 def flushLeft():
   didFlush = False
   for r in range(ROWS):
-    newRow = np.array(filter(lambda x: x > 0, grid[r,:]))
+    newRow = np.array(list(filter(lambda x: x > 0, grid[r,:])))
     if newRow.size < ROWS:
       didFlush = True
     newRow = np.append(newRow, np.zeros(COLUMNS-newRow.size))
@@ -153,7 +153,7 @@ def collapseRight(event):
 def flushRight():
   didFlush = False
   for r in range(ROWS):
-    newRow = np.array(filter(lambda x: x > 0, grid[r,:]))
+    newRow = np.array(list(filter(lambda x: x > 0, grid[r,:])))
     if newRow.size < ROWS:
       didFlush = True
     newRow = np.append(np.zeros(COLUMNS-newRow.size), newRow)
@@ -193,4 +193,3 @@ startC = random.randint(0, COLUMNS - 1)
 grid[startR][startC] = 2
 displayGrid()
 root.mainloop()
-
