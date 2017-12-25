@@ -28,53 +28,53 @@ display = []
 def restart():
   global grid
   grid = np.zeros((ROWS, COLUMNS))
-  startR = random.randint(0, ROWS - 1)
-  startC = random.randint(0, COLUMNS - 1)
-  grid[startR][startC] = 2
-  displayGrid()
+  start_r = random.randint(0, ROWS - 1)
+  start_c = random.randint(0, COLUMNS - 1)
+  grid[start_r][start_c] = 2
+  display_grid()
 
 F = tk.Frame(root, height=500, width=500, bg='#606060')
 B = tk.Button(root, text="Restart", command=restart)
 
 # Setting up grid and display
 for r in range(ROWS):
-  displayRow = []
+  display_row = []
   for c in range(COLUMNS):
-    newLabel = tk.Label(F, bg='#E74C3C', fg='white',
+    new_label = tk.Label(F, bg='#E74C3C', fg='white',
                      borderwidth=10, 
                      width = 4, height = 2,
                      font=("Arial", 28))
-    newLabel.grid(row=r,column=c, padx=3, pady=3)
-    displayRow.append(newLabel)
-  display.append(displayRow)
+    new_label.grid(row=r,column=c, padx=3, pady=3)
+    display_row.append(new_label)
+  display.append(display_row)
 
-def displayGrid():
+def display_grid():
   for r in range(ROWS):
     for c in range(COLUMNS):
-      displayText, displayColour = str(int(grid[r][c])), ''
+      display_text, display_colour = str(int(grid[r][c])), ''
       if grid[r][c] == 0:
-        displayText, displayColour = '', '#C0C0C0'
-      displayColour = TILE_COLOURS.get(grid[r][c], 'black')
-      display[r][c].config(text=displayText)
-      display[r][c].config(bg=displayColour)
+        display_text, display_colour = '', '#C0C0C0'
+      display_colour = TILE_COLOURS.get(grid[r][c], 'black')
+      display[r][c].config(text=display_text)
+      display[r][c].config(bg=display_colour)
 
 def collapse_up_down(event):
   # Check if Up or Down key
   is_reverse = (event.char == '\uf701')
   for c in range(COLUMNS):
       grid[:, c] = collapse_list(grid[:, c], is_reverse)
-  fillRandomCell(getZeros())
-  displayGrid()
+  fill_random_cell(get_zeros())
+  display_grid()
       
 def collapse_left_right(event):
   # Check if Left or Right key
   is_reverse = (event.char == '\uf703')
   for r in range(ROWS):
       grid[r] = collapse_list(grid[r], is_reverse)
-  fillRandomCell(getZeros())
-  displayGrid()
+  fill_random_cell(get_zeros())
+  display_grid()
       
-def getZeros():
+def get_zeros():
   count = 0
   for c in range(COLUMNS):
     for r in range(ROWS):
@@ -82,17 +82,17 @@ def getZeros():
         count += 1
   return count
       
-def fillRandomCell(numFreeCells):
-  if numFreeCells == 0:
+def fill_random_cell(num_free_cells):
+  if num_free_cells == 0:
     return
-  cellNumber = random.randint(0, numFreeCells - 1)
+  cell_number = random.randint(0, num_free_cells - 1)
   for c in range(COLUMNS):
     for r in range(ROWS):
       if grid[r][c] == 0:
-        if cellNumber == 0:
+        if cell_number == 0:
           grid[r][c] = 2
           return
-        cellNumber -= 1
+        cell_number -= 1
 
 F.pack()
 B.pack()
@@ -102,8 +102,8 @@ root.bind('<Down>', collapse_up_down)
 root.bind('<Left>', collapse_left_right)
 root.bind('<Right>', collapse_left_right)
 
-startR = random.randint(0, ROWS - 1)
-startC = random.randint(0, COLUMNS - 1)
-grid[startR][startC] = 2
-displayGrid()
+start_r = random.randint(0, ROWS - 1)
+start_c = random.randint(0, COLUMNS - 1)
+grid[start_r][start_c] = 2
+display_grid()
 root.mainloop()
