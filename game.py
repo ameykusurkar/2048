@@ -33,21 +33,6 @@ def restart():
   grid[start_r][start_c] = 2
   display_grid()
 
-F = tk.Frame(root, height=500, width=500, bg='#606060')
-B = tk.Button(root, text="Restart", command=restart)
-
-# Setting up grid and display
-for r in range(ROWS):
-  display_row = []
-  for c in range(COLUMNS):
-    new_label = tk.Label(F, bg='#E74C3C', fg='white',
-                     borderwidth=10, 
-                     width = 4, height = 2,
-                     font=("Arial", 28))
-    new_label.grid(row=r,column=c, padx=3, pady=3)
-    display_row.append(new_label)
-  display.append(display_row)
-
 def display_grid():
   for r in range(ROWS):
     for c in range(COLUMNS):
@@ -93,6 +78,22 @@ def fill_random_cell(num_free_cells):
           grid[r][c] = 2
           return
         cell_number -= 1
+
+##### GUI and Game setup #####
+
+F = tk.Frame(root, height=500, width=500, bg='#606060')
+B = tk.Button(root, text="Restart", command=restart)
+
+for r in range(ROWS):
+  display_row = []
+  for c in range(COLUMNS):
+    new_label = tk.Label(F, bg='#E74C3C', fg='white',
+                         borderwidth=10,
+                         width=4, height=2,
+                         font=("Arial", 28))
+    new_label.grid(row=r,column=c, padx=3, pady=3)
+    display_row.append(new_label)
+  display.append(display_row)
 
 F.pack()
 B.pack()
