@@ -2,6 +2,8 @@ import tkinter as tk
 import numpy as np
 import random
 
+from collapse_list import collapse_list
+
 root = tk.Tk()
 root.wm_title("2048")
 
@@ -57,100 +59,28 @@ def displayGrid():
       display[r][c].config(bg=displayColour)
 
 def collapseUp(event):
-  flushBefore = flushUp()
   for c in range(COLUMNS):
-    for r in range(ROWS-1):
-      if grid[r][c] == grid[r+1][c]:
-        grid[r][c] += grid[r+1][c]
-        grid[r+1][c] = 0
-  flushAfter = flushUp()
-  if not (flushBefore or flushAfter):
-    # No move to be made if nothing collapses
-    return
+      grid[:, c] = collapse_list(grid[:, c])
   fillRandomCell(getZeros())
   displayGrid()
-
-def flushUp():
-  didFlush = False
-  for c in range(COLUMNS):
-    newCol = np.array(list(filter(lambda x: x > 0, grid[:,c])))
-    if newCol.size < COLUMNS:
-      didFlush = True
-    newCol = np.append(newCol, np.zeros(ROWS-newCol.size))
-    grid[:,c] = newCol
-  return didFlush
       
 def collapseDown(event):
-  flushBefore = flushDown()
   for c in range(COLUMNS):
-    for r in reversed(range(1, ROWS)):
-      if grid[r][c] == grid[r-1][c]:
-        grid[r][c] += grid[r-1][c]
-        grid[r-1][c] = 0
-  flushAfter = flushDown()
-  if not (flushBefore or flushAfter):
-    # No move to be made if nothing collapses
-    return
+      grid[:, c] = collapse_list(grid[:, c], reverse=True)
   fillRandomCell(getZeros())
   displayGrid()
-
-def flushDown():
-  didFlush = False
-  for c in range(COLUMNS):
-    newCol = np.array(list(filter(lambda x: x > 0, grid[:,c])))
-    if newCol.size < COLUMNS:
-      didFlush = True
-    newCol = np.append(np.zeros(ROWS-newCol.size), newCol)
-    grid[:,c] = newCol
-  return didFlush
       
 def collapseLeft(event):
-  flushBefore = flushLeft()
   for r in range(ROWS):
-    for c in range(COLUMNS-1):
-      if grid[r][c] == grid[r][c+1]:
-        grid[r][c] += grid[r][c+1]
-        grid[r][c+1] = 0
-  flushAfter = flushLeft()
-  if not (flushBefore or flushAfter):
-    # No move to be made if nothing collapses
-    return
+      grid[r] = collapse_list(grid[r])
   fillRandomCell(getZeros())
   displayGrid()
-
-def flushLeft():
-  didFlush = False
-  for r in range(ROWS):
-    newRow = np.array(list(filter(lambda x: x > 0, grid[r,:])))
-    if newRow.size < ROWS:
-      didFlush = True
-    newRow = np.append(newRow, np.zeros(COLUMNS-newRow.size))
-    grid[r,:] = newRow
-  return didFlush
       
 def collapseRight(event):
-  flushBefore = flushRight()
   for r in range(ROWS):
-    for c in reversed(range(1, COLUMNS)):
-      if grid[r][c] == grid[r][c-1]:
-        grid[r][c] += grid[r][c-1]
-        grid[r][c-1] = 0
-  flushAfter = flushRight()
-  if not (flushBefore or flushAfter):
-    # No move to be made if nothing collapses
-    return
+      grid[r] = collapse_list(grid[r], reverse=True)
   fillRandomCell(getZeros())
   displayGrid()
-
-def flushRight():
-  didFlush = False
-  for r in range(ROWS):
-    newRow = np.array(list(filter(lambda x: x > 0, grid[r,:])))
-    if newRow.size < ROWS:
-      didFlush = True
-    newRow = np.append(np.zeros(COLUMNS-newRow.size), newRow)
-    grid[r,:] = newRow
-  return didFlush
       
 def getZeros():
   count = 0
