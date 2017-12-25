@@ -58,27 +58,19 @@ def displayGrid():
       display[r][c].config(text=displayText)
       display[r][c].config(bg=displayColour)
 
-def collapseUp(event):
+def collapse_up_down(event):
+  # Check if Up or Down key
+  is_reverse = (event.char == '\uf701')
   for c in range(COLUMNS):
-      grid[:, c] = collapse_list(grid[:, c])
+      grid[:, c] = collapse_list(grid[:, c], is_reverse)
   fillRandomCell(getZeros())
   displayGrid()
       
-def collapseDown(event):
-  for c in range(COLUMNS):
-      grid[:, c] = collapse_list(grid[:, c], reverse=True)
-  fillRandomCell(getZeros())
-  displayGrid()
-      
-def collapseLeft(event):
+def collapse_left_right(event):
+  # Check if Left or Right key
+  is_reverse = (event.char == '\uf703')
   for r in range(ROWS):
-      grid[r] = collapse_list(grid[r])
-  fillRandomCell(getZeros())
-  displayGrid()
-      
-def collapseRight(event):
-  for r in range(ROWS):
-      grid[r] = collapse_list(grid[r], reverse=True)
+      grid[r] = collapse_list(grid[r], is_reverse)
   fillRandomCell(getZeros())
   displayGrid()
       
@@ -105,10 +97,10 @@ def fillRandomCell(numFreeCells):
 F.pack()
 B.pack()
 
-root.bind('<Up>', collapseUp)
-root.bind('<Down>', collapseDown)
-root.bind('<Left>', collapseLeft)
-root.bind('<Right>', collapseRight)
+root.bind('<Up>', collapse_up_down)
+root.bind('<Down>', collapse_up_down)
+root.bind('<Left>', collapse_left_right)
+root.bind('<Right>', collapse_left_right)
 
 startR = random.randint(0, ROWS - 1)
 startC = random.randint(0, COLUMNS - 1)
