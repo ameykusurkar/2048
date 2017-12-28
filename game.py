@@ -1,6 +1,7 @@
 import tkinter as tk
 import numpy as np
 import random
+import copy
 
 from collapse_list import collapse_list
 
@@ -46,18 +47,26 @@ def display_grid():
 def collapse_up_down(event):
   # Check if Up or Down key
   is_reverse = (event.char == '\uf701')
+  global grid
+  new_grid = copy.copy(grid)
   for c in range(COLUMNS):
-      grid[:, c] = collapse_list(grid[:, c], is_reverse)
-  fill_random_cell(get_zeros())
-  display_grid()
+      new_grid[:, c] = collapse_list(new_grid[:, c], is_reverse)
+  if not np.array_equal(grid, new_grid):
+      grid = new_grid # Only a valid move if board changes
+      fill_random_cell(get_zeros())
+      display_grid()
       
 def collapse_left_right(event):
   # Check if Left or Right key
   is_reverse = (event.char == '\uf703')
+  global grid
+  new_grid = copy.copy(grid)
   for r in range(ROWS):
-      grid[r] = collapse_list(grid[r], is_reverse)
-  fill_random_cell(get_zeros())
-  display_grid()
+      new_grid[r] = collapse_list(new_grid[r], is_reverse)
+  if not np.array_equal(grid, new_grid):
+      grid = new_grid # Only a valid move if board changes
+      fill_random_cell(get_zeros())
+      display_grid()
       
 def get_zeros():
   count = 0
