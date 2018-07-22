@@ -55,7 +55,7 @@ def collapse_up_down(event):
       grid = new_grid # Only a valid move if board changes
       fill_random_cell(get_zeros())
       display_grid()
-      
+
 def collapse_left_right(event):
   # Check if Left or Right key
   is_reverse = (event.char == '\uf703')
@@ -67,7 +67,7 @@ def collapse_left_right(event):
       grid = new_grid # Only a valid move if board changes
       fill_random_cell(get_zeros())
       display_grid()
-      
+
 def get_zeros():
   count = 0
   for c in range(COLUMNS):
@@ -75,7 +75,7 @@ def get_zeros():
       if grid[r][c] == 0:
         count += 1
   return count
-      
+
 def fill_random_cell(num_free_cells):
   if num_free_cells == 0:
     return
