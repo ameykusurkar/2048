@@ -1,14 +1,14 @@
 import tkinter as tk
 import numpy as np
-import random
 import copy
+import random
 
+from grid import Grid, ROWS, COLUMNS
 from collapse_list import collapse_list
 
 root = tk.Tk()
 root.wm_title("2048")
 
-ROWS, COLUMNS = 4, 4
 TILE_COLOURS = {
     0:    '#C0C0C0',
     2:    '#1ABC9C',
@@ -23,24 +23,20 @@ TILE_COLOURS = {
     1024: '#CA2C68',
 }
 
-grid = np.zeros((ROWS, COLUMNS))
+grid = Grid()
 display = []
 
 def restart():
-  global grid
-  grid = np.zeros((ROWS, COLUMNS))
-  start_r = random.randint(0, ROWS - 1)
-  start_c = random.randint(0, COLUMNS - 1)
-  grid[start_r][start_c] = 2
-  display_grid()
+    grid.restart()
+    display_grid()
 
 def display_grid():
   for r in range(ROWS):
     for c in range(COLUMNS):
-      display_text, display_colour = str(int(grid[r][c])), ''
-      if grid[r][c] == 0:
+      display_text, display_colour = str(int(grid.grid[r][c])), ''
+      if grid.grid[r][c] == 0:
         display_text, display_colour = '', '#C0C0C0'
-      display_colour = TILE_COLOURS.get(grid[r][c], 'black')
+      display_colour = TILE_COLOURS.get(grid.grid[r][c], 'black')
       display[r][c].config(text=display_text)
       display[r][c].config(bg=display_colour)
 
@@ -48,45 +44,38 @@ def collapse_up_down(event):
   # Check if Up or Down key
   is_reverse = (event.char == '\uf701')
   global grid
-  new_grid = copy.copy(grid)
+  new_grid = copy.copy(grid.grid)
   for c in range(COLUMNS):
       new_grid[:, c] = collapse_list(new_grid[:, c], is_reverse)
-  if not np.array_equal(grid, new_grid):
-      grid = new_grid # Only a valid move if board changes
-      fill_random_cell(get_zeros())
+  if not np.array_equal(grid.grid, new_grid):
+      grid.grid = new_grid # Only a valid move if board changes
+      fill_random_cell()
       display_grid()
 
 def collapse_left_right(event):
   # Check if Left or Right key
   is_reverse = (event.char == '\uf703')
   global grid
-  new_grid = copy.copy(grid)
+  new_grid = copy.copy(grid.grid)
   for r in range(ROWS):
       new_grid[r] = collapse_list(new_grid[r], is_reverse)
-  if not np.array_equal(grid, new_grid):
-      grid = new_grid # Only a valid move if board changes
-      fill_random_cell(get_zeros())
+  if not np.array_equal(grid.grid, new_grid):
+      grid.grid = new_grid # Only a valid move if board changes
+      fill_random_cell()
       display_grid()
 
-def get_zeros():
-  count = 0
-  for c in range(COLUMNS):
-    for r in range(ROWS):
-      if grid[r][c] == 0:
-        count += 1
-  return count
-
-def fill_random_cell(num_free_cells):
-  if num_free_cells == 0:
-    return
-  cell_number = random.randint(0, num_free_cells - 1)
-  for c in range(COLUMNS):
-    for r in range(ROWS):
-      if grid[r][c] == 0:
-        if cell_number == 0:
-          grid[r][c] = 2
-          return
-        cell_number -= 1
+def fill_random_cell():
+    num_free_cells = grid.get_zeros()
+    if num_free_cells == 0:
+        return
+    cell_number = random.randint(0, num_free_cells - 1)
+    for c in range(COLUMNS):
+        for r in range(ROWS):
+            if grid.grid[r][c] == 0:
+                if cell_number == 0:
+                    grid.grid[r][c] = 2
+                    return
+                cell_number -= 1
 
 ##### GUI and Game setup #####
 
@@ -114,6 +103,6 @@ root.bind('<Right>', collapse_left_right)
 
 start_r = random.randint(0, ROWS - 1)
 start_c = random.randint(0, COLUMNS - 1)
-grid[start_r][start_c] = 2
+grid.grid[start_r][start_c] = 2
 display_grid()
 root.mainloop()
