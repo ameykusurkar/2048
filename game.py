@@ -49,7 +49,7 @@ def collapse_up_down(event):
       new_grid[:, c] = collapse_list(new_grid[:, c], is_reverse)
   if not np.array_equal(grid.grid, new_grid):
       grid.grid = new_grid # Only a valid move if board changes
-      fill_random_cell()
+      grid.fill_random_cell()
       display_grid()
 
 def collapse_left_right(event):
@@ -61,21 +61,8 @@ def collapse_left_right(event):
       new_grid[r] = collapse_list(new_grid[r], is_reverse)
   if not np.array_equal(grid.grid, new_grid):
       grid.grid = new_grid # Only a valid move if board changes
-      fill_random_cell()
+      grid.fill_random_cell()
       display_grid()
-
-def fill_random_cell():
-    num_free_cells = grid.get_zeros()
-    if num_free_cells == 0:
-        return
-    cell_number = random.randint(0, num_free_cells - 1)
-    for c in range(COLUMNS):
-        for r in range(ROWS):
-            if grid.grid[r][c] == 0:
-                if cell_number == 0:
-                    grid.grid[r][c] = 2
-                    return
-                cell_number -= 1
 
 ##### GUI and Game setup #####
 
