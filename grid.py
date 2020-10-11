@@ -1,11 +1,26 @@
 import numpy as np
 import random
+import copy
+
+from collapse_list import collapse_list
 
 ROWS, COLUMNS = 4, 4
 
 class Grid:
     def __init__(self):
         self.grid = np.zeros((ROWS, COLUMNS))
+
+    def up(self):
+        return self.collapse_up_down(is_reverse=False)
+
+    def down(self):
+        return self.collapse_up_down(is_reverse=True)
+
+    def left(self):
+        return self.collapse_left_right(is_reverse=False)
+
+    def right(self):
+        return self.collapse_left_right(is_reverse=True)
 
     def restart(self):
         self.grid = np.zeros((ROWS, COLUMNS))
@@ -34,3 +49,24 @@ class Grid:
                         return
                     cell_number -= 1
 
+    def collapse_up_down(self, is_reverse):
+        new_grid = copy.copy(self.grid)
+        for c in range(COLUMNS):
+            new_grid[:, c] = collapse_list(new_grid[:, c], is_reverse)
+        if not np.array_equal(self.grid, new_grid):
+            self.grid = new_grid # Only a valid move if board changes
+            self.fill_random_cell()
+            return True
+        else:
+            return False
+
+    def collapse_left_right(self, is_reverse):
+        new_grid = copy.copy(self.grid)
+        for r in range(ROWS):
+            new_grid[r] = collapse_list(new_grid[r], is_reverse)
+        if not np.array_equal(self.grid, new_grid):
+            self.grid = new_grid # Only a valid move if board changes
+            self.fill_random_cell()
+            return True
+        else:
+            return False

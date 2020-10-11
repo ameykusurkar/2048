@@ -1,10 +1,8 @@
 import tkinter as tk
 import numpy as np
-import copy
 import random
 
 from grid import Grid, ROWS, COLUMNS
-from collapse_list import collapse_list
 
 root = tk.Tk()
 root.wm_title("2048")
@@ -40,28 +38,24 @@ def display_grid():
       display[r][c].config(text=display_text)
       display[r][c].config(bg=display_colour)
 
-def collapse_up_down(event):
-  # Check if Up or Down key
-  is_reverse = (event.char == '\uf701')
-  global grid
-  new_grid = copy.copy(grid.grid)
-  for c in range(COLUMNS):
-      new_grid[:, c] = collapse_list(new_grid[:, c], is_reverse)
-  if not np.array_equal(grid.grid, new_grid):
-      grid.grid = new_grid # Only a valid move if board changes
-      grid.fill_random_cell()
+def key_up(event):
+  grid_did_change = grid.up()
+  if grid_did_change:
       display_grid()
 
-def collapse_left_right(event):
-  # Check if Left or Right key
-  is_reverse = (event.char == '\uf703')
-  global grid
-  new_grid = copy.copy(grid.grid)
-  for r in range(ROWS):
-      new_grid[r] = collapse_list(new_grid[r], is_reverse)
-  if not np.array_equal(grid.grid, new_grid):
-      grid.grid = new_grid # Only a valid move if board changes
-      grid.fill_random_cell()
+def key_down(event):
+  grid_did_change = grid.down()
+  if grid_did_change:
+      display_grid()
+
+def key_left(event):
+  grid_did_change = grid.left()
+  if grid_did_change:
+      display_grid()
+
+def key_right(event):
+  grid_did_change = grid.right()
+  if grid_did_change:
       display_grid()
 
 ##### GUI and Game setup #####
@@ -83,10 +77,10 @@ for r in range(ROWS):
 F.pack()
 B.pack()
 
-root.bind('<Up>', collapse_up_down)
-root.bind('<Down>', collapse_up_down)
-root.bind('<Left>', collapse_left_right)
-root.bind('<Right>', collapse_left_right)
+root.bind('<Up>', key_up)
+root.bind('<Down>', key_down)
+root.bind('<Left>', key_left)
+root.bind('<Right>', key_right)
 
 start_r = random.randint(0, ROWS - 1)
 start_c = random.randint(0, COLUMNS - 1)
