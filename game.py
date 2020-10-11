@@ -1,8 +1,9 @@
 import tkinter as tk
-import numpy as np
 import random
 
-from grid import Grid, ROWS, COLUMNS
+from grid import Grid
+
+ROWS, COLUMNS = 4, 4
 
 root = tk.Tk()
 root.wm_title("2048")
@@ -21,7 +22,7 @@ TILE_COLOURS = {
     1024: '#CA2C68',
 }
 
-grid = Grid()
+grid = Grid(rows=ROWS, columns=COLUMNS)
 display = []
 
 def restart():
