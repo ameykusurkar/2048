@@ -1,12 +1,8 @@
 import tkinter as tk
-import random
 
 from grid import Grid
 
 ROWS, COLUMNS = 4, 4
-
-root = tk.Tk()
-root.wm_title("2048")
 
 TILE_COLOURS = {
     0:    '#C0C0C0',
@@ -21,6 +17,9 @@ TILE_COLOURS = {
     512:  '#EA4C88',
     1024: '#CA2C68',
 }
+
+root = tk.Tk()
+root.wm_title("2048")
 
 grid = Grid(rows=ROWS, columns=COLUMNS)
 display = []
@@ -83,8 +82,6 @@ root.bind('<Down>', key_down)
 root.bind('<Left>', key_left)
 root.bind('<Right>', key_right)
 
-start_r = random.randint(0, ROWS - 1)
-start_c = random.randint(0, COLUMNS - 1)
-grid.grid[start_r][start_c] = 2
+grid.restart()
 display_grid()
 root.mainloop()

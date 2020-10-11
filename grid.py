@@ -24,11 +24,9 @@ class Grid:
 
     def restart(self):
         self.grid = np.zeros((self.rows, self.columns))
-        start_r = random.randint(0, self.rows - 1)
-        start_c = random.randint(0, self.columns - 1)
-        self.grid[start_r][start_c] = 2
+        self.fill_random_cell()
 
-    def get_zeros(self):
+    def get_free_cell_count(self):
         count = 0
         for c in range(self.columns):
             for r in range(self.rows):
@@ -37,9 +35,11 @@ class Grid:
         return count
 
     def fill_random_cell(self):
-        num_free_cells = self.get_zeros()
+        num_free_cells = self.get_free_cell_count()
         if num_free_cells == 0:
             return
+        # Picks a random n between 0 and `num_free_cells`,
+        # populates the nth free cell
         cell_number = random.randint(0, num_free_cells - 1)
         for c in range(self.columns):
             for r in range(self.rows):
@@ -47,7 +47,8 @@ class Grid:
                     if cell_number == 0:
                         self.grid[r][c] = 2
                         return
-                    cell_number -= 1
+                    else:
+                        cell_number -= 1
 
     def collapse_up_down(self, is_reverse):
         new_grid = copy.copy(self.grid)
