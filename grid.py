@@ -10,6 +10,9 @@ class Grid:
         self.columns = columns
         self.grid = np.zeros((rows, columns))
 
+    def value_at(self, row, column):
+        return int(self.grid[row][column])
+
     def up(self):
         return self.collapse_up_down(is_reverse=False)
 
