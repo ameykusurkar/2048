@@ -3,7 +3,7 @@ import tkinter as tk
 from grid import Grid
 
 ROWS, COLUMNS = 4, 4
-TILE_COLORS = {
+TILE_COLORS: dict[int, str] = {
     0:    '#C0C0C0',
     2:    '#1ABC9C',
     4:    '#16A085',
@@ -17,68 +17,68 @@ TILE_COLORS = {
     1024: '#CA2C68',
 }
 
-grid = Grid(rows=ROWS, columns=COLUMNS)
-display = []
+DIRECTION_KEYS: dict[str, str] = {
+    'Up': 'up',
+    'Down': 'down',
+    'Left': 'left',
+    'Right': 'right',
+}
 
-def restart():
-    grid.restart()
-    display_grid()
 
-def display_grid():
-    for r in range(ROWS):
-        for c in range(COLUMNS):
-            value = grid.value_at(r, c)
-            display_text = '' if value == 0 else str(value)
-            display_color = TILE_COLORS.get(value, 'black')
-            display[r][c].config(text=display_text, bg=display_color)
+class Game:
+    def __init__(self, root: tk.Tk) -> None:
+        self.grid = Grid(rows=ROWS, columns=COLUMNS)
+        self.display: list[list[tk.Label]] = []
 
-def key_up(event):
-    grid_did_change = grid.up()
-    if grid_did_change:
-        display_grid()
+        root.wm_title('2048')
 
-def key_down(event):
-    grid_did_change = grid.down()
-    if grid_did_change:
-        display_grid()
+        frame = tk.Frame(root, height=500, width=500, bg='#606060')
+        for r in range(ROWS):
+            display_row: list[tk.Label] = []
+            for c in range(COLUMNS):
+                label = tk.Label(
+                    frame, bg='#E74C3C', fg='white',
+                    borderwidth=10, width=4, height=2,
+                    font=('Arial', 28),
+                )
+                label.grid(row=r, column=c, padx=3, pady=3)
+                display_row.append(label)
+            self.display.append(display_row)
+        frame.pack()
 
-def key_left(event):
-    grid_did_change = grid.left()
-    if grid_did_change:
-        display_grid()
+        tk.Button(root, text='Restart', command=self.restart).pack()
 
-def key_right(event):
-    grid_did_change = grid.right()
-    if grid_did_change:
-        display_grid()
+        for key in DIRECTION_KEYS:
+            root.bind(f'<{key}>', self._on_key)
 
-##### GUI and Game setup #####
+        self.restart()
 
-root = tk.Tk()
-root.wm_title('2048')
+    def restart(self) -> None:
+        self.grid.restart()
+        self._update_display()
 
-F = tk.Frame(root, height=500, width=500, bg='#606060')
-B = tk.Button(root, text='Restart', command=restart)
+    def _on_key(self, event: tk.Event) -> None:  # type: ignore[type-arg]
+        direction = DIRECTION_KEYS.get(event.keysym)
+        if direction is None:
+            return
+        move = getattr(self.grid, direction)
+        if move():
+            self._update_display()
 
-for r in range(ROWS):
-    display_row = []
-    for c in range(COLUMNS):
-        new_label = tk.Label(F, bg='#E74C3C', fg='white',
-                             borderwidth=10,
-                             width=4, height=2,
-                             font=('Arial', 28))
-        new_label.grid(row=r,column=c, padx=3, pady=3)
-        display_row.append(new_label)
-    display.append(display_row)
+    def _update_display(self) -> None:
+        for r in range(ROWS):
+            for c in range(COLUMNS):
+                value = self.grid.value_at(r, c)
+                display_text = '' if value == 0 else str(value)
+                display_color = TILE_COLORS.get(value, 'black')
+                self.display[r][c].config(text=display_text, bg=display_color)
 
-F.pack()
-B.pack()
 
-root.bind('<Up>', key_up)
-root.bind('<Down>', key_down)
-root.bind('<Left>', key_left)
-root.bind('<Right>', key_right)
+def main() -> None:
+    root = tk.Tk()
+    Game(root)
+    root.mainloop()
 
-grid.restart()
-display_grid()
-root.mainloop()
+
+if __name__ == '__main__':
+    main()
