@@ -3,82 +3,95 @@ import tkinter as tk
 from grid import Grid
 
 ROWS, COLUMNS = 4, 4
-TILE_COLORS = {
-    0:    '#C0C0C0',
-    2:    '#1ABC9C',
-    4:    '#16A085',
-    8:    '#2ECC71',
-    16:   '#27AE60',
-    32:   '#3498DB',
-    64:   '#2980B9',
-    128:  '#34495E',
-    256:  '#2C3E50',
-    512:  '#EA4C88',
-    1024: '#CA2C68',
+TILE_COLORS: dict[int, str] = {
+    0:    '#cdc1b4',
+    2:    '#eee4da',
+    4:    '#ede0c8',
+    8:    '#f2b179',
+    16:   '#f59563',
+    32:   '#f67c5f',
+    64:   '#f65e3b',
+    128:  '#edcf72',
+    256:  '#edcc61',
+    512:  '#edc850',
+    1024: '#edc53f',
+    2048: '#edc22e',
 }
 
-grid = Grid(rows=ROWS, columns=COLUMNS)
-display = []
+DARK_TEXT = '#776e65'
+LIGHT_TEXT = '#f9f6f2'
 
-def restart():
-    grid.restart()
-    display_grid()
+DIRECTION_KEYS: dict[str, str] = {
+    'Up': 'up',
+    'Down': 'down',
+    'Left': 'left',
+    'Right': 'right',
+}
 
-def display_grid():
-    for r in range(ROWS):
-        for c in range(COLUMNS):
-            value = grid.value_at(r, c)
-            display_text = '' if value == 0 else str(value)
-            display_color = TILE_COLORS.get(value, 'black')
-            display[r][c].config(text=display_text, bg=display_color)
 
-def key_up(event):
-    grid_did_change = grid.up()
-    if grid_did_change:
-        display_grid()
+class Game:
+    def __init__(self, root: tk.Tk) -> None:
+        self.grid = Grid(rows=ROWS, columns=COLUMNS)
+        self.display: list[list[tk.Label]] = []
 
-def key_down(event):
-    grid_did_change = grid.down()
-    if grid_did_change:
-        display_grid()
+        root.wm_title('2048')
+        root.configure(bg='#bbada0')
 
-def key_left(event):
-    grid_did_change = grid.left()
-    if grid_did_change:
-        display_grid()
+        frame = tk.Frame(root, bg='#bbada0')
+        for r in range(ROWS):
+            display_row: list[tk.Label] = []
+            for c in range(COLUMNS):
+                label = tk.Label(
+                    frame, bg='#cdc1b4', fg=DARK_TEXT,
+                    width=6, height=3,
+                    font=('Helvetica', 36, 'bold'),
+                )
+                label.grid(row=r, column=c, padx=6, pady=6)
+                display_row.append(label)
+            self.display.append(display_row)
+        frame.pack(padx=20, pady=20)
 
-def key_right(event):
-    grid_did_change = grid.right()
-    if grid_did_change:
-        display_grid()
+        tk.Button(
+            root, text='Restart', command=self.restart,
+            highlightbackground='#bbada0', fg=DARK_TEXT,
+            font=('Helvetica', 14, 'bold'),
+            padx=20, pady=6,
+        ).pack(pady=(0, 20))
 
-##### GUI and Game setup #####
+        for key in DIRECTION_KEYS:
+            root.bind(f'<{key}>', self._on_key)
 
-root = tk.Tk()
-root.wm_title('2048')
+        self.restart()
 
-F = tk.Frame(root, height=500, width=500, bg='#606060')
-B = tk.Button(root, text='Restart', command=restart)
+    def restart(self) -> None:
+        self.grid.restart()
+        self._update_display()
 
-for r in range(ROWS):
-    display_row = []
-    for c in range(COLUMNS):
-        new_label = tk.Label(F, bg='#E74C3C', fg='white',
-                             borderwidth=10,
-                             width=4, height=2,
-                             font=('Arial', 28))
-        new_label.grid(row=r,column=c, padx=3, pady=3)
-        display_row.append(new_label)
-    display.append(display_row)
+    def _on_key(self, event: tk.Event) -> None:  # type: ignore[type-arg]
+        direction = DIRECTION_KEYS.get(event.keysym)
+        if direction is None:
+            return
+        move = getattr(self.grid, direction)
+        if move():
+            self._update_display()
 
-F.pack()
-B.pack()
+    def _update_display(self) -> None:
+        for r in range(ROWS):
+            for c in range(COLUMNS):
+                value = self.grid.value_at(r, c)
+                display_text = '' if value == 0 else str(value)
+                display_color = TILE_COLORS.get(value, '#3c3a32')
+                text_color = DARK_TEXT if value in (0, 2, 4) else LIGHT_TEXT
+                self.display[r][c].config(
+                    text=display_text, bg=display_color, fg=text_color,
+                )
 
-root.bind('<Up>', key_up)
-root.bind('<Down>', key_down)
-root.bind('<Left>', key_left)
-root.bind('<Right>', key_right)
 
-grid.restart()
-display_grid()
-root.mainloop()
+def main() -> None:
+    root = tk.Tk()
+    Game(root)
+    root.mainloop()
+
+
+if __name__ == '__main__':
+    main()
