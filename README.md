@@ -6,5 +6,5 @@ An implementation of the popular game _2048_.
 ### To Run:
 
 ```shell
-$ python3 main.py
+$ python main.py
 ```
